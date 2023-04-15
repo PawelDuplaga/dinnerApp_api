@@ -1,0 +1,52 @@
+# .NET build output
+bin/
+obj/
+
+# Visual Studio files
+*.user
+*.suo
+*.cache
+*.vsp
+*.psess
+
+# Build results
+[Bb]uild/
+
+# NuGet packages
+*.nupkg
+packages/
+
+# MSTest test Results
+TestResults/
+*.trx
+
+# Resharper files
+_ReSharper*/
+
+# StyleCop files
+StyleCop.Cache
+StyleCop.ReSharper
+
+# TeamCity build history
+.teamcity/
+
+# Ignore the appsettings.json file, which may contain sensitive information
+appsettings.json
+
+# Ignore logs
+*.log
+
+# Ignore user secrets
+secrets.json
+*.csproj.user
+
+# Ignore generated code files
+ModelBuilder.cs
+DbContextModelSnapshot.cs
+
+# Ignore publish profiles
+*.pubxml
+
+# Ignore generated documentation files
+*.xml
+*.html
