@@ -1,10 +1,9 @@
+using HotDinner.Domain.Entities;
+
 namespace HotDinner.Application.Services.Authentication;
 
     public record AuthenticationResult
     (
-        Guid Id,
-        string FirstName,
-        string LastName,
-        string Email,
+        User User,
         string Token
     );

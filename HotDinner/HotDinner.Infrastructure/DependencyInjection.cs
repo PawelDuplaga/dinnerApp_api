@@ -4,6 +4,8 @@ using HotDinner.Infrastructure.Authentication;
 using HotDinner.Infrastructure.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
+using HotDinner.Application.Common.Interfaces.Persistence;
+using HotDinner.Infrastructure.Persistence;
 
 namespace HotDinner.Infrastructure;
 
@@ -14,8 +16,11 @@ public static class DependencyInjection
         ConfigurationManager configuration)
     {   
         services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SectionName));
+        
         services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();
         services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+
+        services.AddScoped<IUserRepository, UserRepository>();
         return services;
     }
 }
