@@ -7,11 +7,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using HotDinner.Contracts.Authentication;
 using HotDinner.Application.Services.Authentication;
+using HotDinner.Api.Filters;
+using OneOf;
+using HotDinner.Application.Common.Errors;
 
 namespace HotDinner.Api.Controllers
 {
     [ApiController]
     [Route("auth")]
+    //[ErrorHandlingFilter]
     public class AuthenticationController : ControllerBase
     {
 
@@ -26,20 +30,27 @@ namespace HotDinner.Api.Controllers
         [HttpPost("register")]
         public IActionResult Register(RegisterRequest request)
         {
-            var authResult = _authenticationService.Register(
+            OneOf<AuthenticationResult, DuplicateEmailError> registerResult = _authenticationService.Register(
                 request.FirstName, 
                 request.LastName ,
                 request.Email, 
                 request.Password);
+            
+            return registerResult.Match(
+                authResult => Ok(MapAuthResult(authResult)),
+                _ => Problem(statusCode: StatusCodes.Status409Conflict, title : "Email is already used")
+            );
 
-            var response = new AuthenticationResponse(
-                authResult.User.Id,
-                authResult.User.FirstName,
-                authResult.User.LastName,
-                authResult.User.Email,
-                authResult.Token);
+        }
 
-            return Ok(response);
+        private static AuthenticationResponse MapAuthResult(AuthenticationResult authResult)
+        {
+            return new AuthenticationResponse(
+                                authResult.User.Id,
+                                authResult.User.FirstName,
+                                authResult.User.LastName,
+                                authResult.User.Email,
+                                authResult.Token);
         }
 
         [HttpPost("login")]

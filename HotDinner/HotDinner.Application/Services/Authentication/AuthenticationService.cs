@@ -1,6 +1,8 @@
+using HotDinner.Application.Common.Errors;
 using HotDinner.Application.Common.Interfaces.Authentication;
 using HotDinner.Application.Common.Interfaces.Persistence;
 using HotDinner.Domain.Entities;
+using OneOf;
 
 namespace HotDinner.Application.Services.Authentication;
 
@@ -15,13 +17,13 @@ public class AuthenticationService : IAuthenticationService
         _userRepository = userRepository;
     }
 
-    public AuthenticationResult Register(string firstName, string lastName, string email, string password)
+    public OneOf<AuthenticationResult, DuplicateEmailError> Register(string firstName, string lastName, string email, string password)
     {
         //Check if user already exists
-        if (_userRepository.GetByEmail(email) != null)
-            throw new Exception("User with given email already exists");
-
-        //Create user (generate unique id)
+        if (_userRepository.GetByEmail(email) is not null)
+        {
+            return new DuplicateEmailError();
+        }
 
         var user = new User
         {
